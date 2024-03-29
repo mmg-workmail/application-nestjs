@@ -3,6 +3,7 @@ import {
     IsEmail,
     IsEnum,
     IsInt,
+    IsMobilePhone,
     IsNotEmpty,
     IsString,
     MinLength
@@ -39,6 +40,8 @@ import { Gender } from 'src/security/user/enums/gender.enum';
     )
     email: string;
   
+    @IsMobilePhone()
+    phoneNumber: string
   
     @IsInt()
     age: number = 1;

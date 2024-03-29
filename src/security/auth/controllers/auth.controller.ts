@@ -17,7 +17,9 @@ import { JwtRefreshTokenGuard } from '../guards/jwt-refresh-token.guard';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { SignUpDto } from '../dto/sign-up.dto';
 import { SignInDto } from '../dto/sign-in.dto';
-import {  ChangePasswordDto } from '../dto/change-password.dto';
+import {  ForgetPasswordDto } from '../dto/forget-password.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+
 
 @Controller('client/auth')
 export class AuthController {
@@ -61,14 +63,15 @@ export class AuthController {
     
   }
 
-  @Post('change-password')
-  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
 
+  @Post('forget-password')
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    return this.authService.forgetPassword(forgetPasswordDto)
   }
 
   @Post('reset-password')
-  async resetPassword() {
-
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto)
   }
 
   

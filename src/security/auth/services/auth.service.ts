@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 
 import { ClientService as UserClientService } from 'src/security/user/modules/client/services/client.service';
 
@@ -10,6 +9,14 @@ import { RefreshTokenIdsStorage } from '../storage/refresh-token-ids-storage';
 import { SignInDto } from '../dto/sign-in.dto';
 import { SignUpDto } from '../dto/sign-up.dto';
 import { User } from 'src/security/user/entities/user.entity';
+import { ForgetPasswordDto } from '../dto/forget-password.dto';
+import { Otp } from 'src/security/user/entities/otp.entity';
+import { ConfigService } from '@nestjs/config';
+import { Auth } from 'src/shared/configs/interface';
+import { ConfigKey } from 'src/shared/configs/enum';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { OtpService } from 'src/security/user/modules/otp/services/otp/otp.service';
+import { UseCase } from 'src/security/user/enums/otp.enum';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +24,9 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userClientService: UserClientService,
+    private readonly otpService: OtpService,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+    private readonly configService : ConfigService
   ) { }
 
   async signIn(signInDto: SignInDto) {
@@ -71,14 +80,15 @@ export class AuthService {
   }
 
   async validateUserForSignIn(username: string, pass: string): Promise<User | null> {
-    const user = await this.userClientService.findByUsername(username);
-    if (user && user.validatePassword(pass)) {
+    const user = await this.userClientService.findByUsernameOREmailOrPhone(username);
+    if (user && await user.validatePassword(pass)) {
+      delete user.password
       return user;
     }
     return null;
   }
   async validateUserForSignUp(signUpDto: SignUpDto): Promise<boolean> {
-    const user = await this.userClientService.findByUsername(signUpDto.username);
+    const user = await this.userClientService.findByUsernameOREmailOrPhone(signUpDto.username);
     if (user) {
       return false;
     } else {
@@ -106,6 +116,32 @@ export class AuthService {
       refresh_token: refreshToken,
       user: user
     };
+  }
+
+
+  async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise< {otp: Otp, ttl: number} | null> {
+    const user = await this.userClientService.findByUsernameOREmailOrPhone(forgetPasswordDto.account);
+    if(!user) {
+      throw new NotFoundException(`user is not exit`);
+    }
+    const authCOnfig = this.configService.get<Auth>(ConfigKey.AUTH);
+    const otp = await this.otpService.set(user, forgetPasswordDto.type, UseCase.FORGET_PASSWORD)
+
+    delete otp.user
+    delete otp.otp
+    delete otp.id
+    delete otp.createdAt
+    delete otp.updatedAt
+    delete otp.is_done
+    
+    return {otp : otp, ttl: authCOnfig.expiresForgetPassword}
+  }
+
+  async resetPassword(resetPasswordDto : ResetPasswordDto) {
+    const authCOnfig = this.configService.get<Auth>(ConfigKey.AUTH);
+    const otp = await this.otpService.isValid(resetPasswordDto.token, resetPasswordDto.otp, authCOnfig.expiresForgetPassword)
+    
+    return this.userClientService.resetPassword(otp.user, resetPasswordDto.newPassword)
   }
 
 }

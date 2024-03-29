@@ -7,6 +7,7 @@ const AuthConfig = registerAs(
 
         secret : 'sada;lskjdpaosjdasipoda',
         expiresIn : '1h',
+        expiresForgetPassword: 180
     }),
 );
 

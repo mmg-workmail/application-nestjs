@@ -3,5 +3,6 @@
 export interface Auth{
 
     secret: string,
-    expiresIn: string
+    expiresIn: string,
+    expiresForgetPassword: number
 }

@@ -21,6 +21,9 @@ async function bootstrap() {
   // set port of config 
   const configService = app.get(ConfigService);
   const appConfig = configService.get<AppConfig>(ConfigKey.APP)
+
+
+  app.setGlobalPrefix('api/v1/');
   await app.listen(appConfig.port);
 
 

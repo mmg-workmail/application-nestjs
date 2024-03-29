@@ -4,10 +4,12 @@ import { User } from 'src/security/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from '../dto/register-user.dto';
 
+
 @Injectable()
 export class ClientService {
     constructor(
         @InjectRepository(User) private readonly usersRepository: Repository<User>,
+
       ) {}
       async register(createUserDto: RegisterUserDto): Promise<User>  {
         const user: User = new User();
@@ -16,7 +18,9 @@ export class ClientService {
         user.age = createUserDto.age;
         user.email = createUserDto.email;
         user.username = createUserDto.username;
-        user.password = await user.bcryptPassword(createUserDto.password);
+        user.phoneNumber = createUserDto.phoneNumber
+        await user.bcryptPassword(createUserDto.password);
+
         user.gender = createUserDto.gender;
     
         return this.usersRepository.save(user);
@@ -25,7 +29,20 @@ export class ClientService {
       async findOne(id: number): Promise<User | undefined> {
         return this.usersRepository.findOne({ where: { id } });
       }
-      async findByUsername(username: string): Promise<User | undefined> {
-        return this.usersRepository.findOne({ where: { username } });
+
+      async findByUsernameOREmailOrPhone(account: string): Promise<User | undefined> {
+        return this.usersRepository.findOne({ where: [{ username : account }, { email : account}, {phoneNumber: account}]  });
+      }
+
+      async resetPassword(_user: User, newPassword : string) {
+        const user: User = new User();
+
+        user.id = _user.id
+        await user.bcryptPassword(newPassword)
+        await this.usersRepository.save(user);
+        return {
+          username: _user.username,
+          email: _user.email
+        }
       }
 }

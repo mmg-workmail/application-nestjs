@@ -3,6 +3,7 @@ import { AppConfig } from "./app";
 import { CacheManager } from "./cacheManager";
 import { Validation} from "./validation";
 import { Auth } from "./auth";
+import { ProvidersConfig } from "./providers";
 
 
 export {
@@ -10,5 +11,6 @@ export {
     AppConfig,
     Validation,
     CacheManager,
-    Auth
+    Auth,
+    ProvidersConfig
 }

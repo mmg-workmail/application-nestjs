@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsEnum,
   IsInt,
+  IsMobilePhone,
   IsNotEmpty,
   IsString,
   Matches,
@@ -41,6 +42,9 @@ export class CreateUserDto {
   )
   email: string;
 
+    
+  @IsMobilePhone()
+  phoneNumber: string
 
   @IsInt()
   age: number = 1;

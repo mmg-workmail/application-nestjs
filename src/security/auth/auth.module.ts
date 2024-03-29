@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ClientModule as UserClientModule } from '../user/modules/client/client.module';
+import { OtpModule } from '../user/modules/otp/otp.module';
+
+
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
-import { ClientService as UserClientService } from '../user/modules/client/services/client.service';
-import { ClientModule as UserClientModule } from '../user/modules/client/client.module';
-import { User } from '../user/entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+
 
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,11 +16,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKey } from 'src/shared/configs/enum';
 import { Auth } from 'src/shared/configs/interface';
 
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
     UserClientModule,
-
+    OtpModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -38,8 +39,6 @@ import { Auth } from 'src/shared/configs/interface';
   controllers: [AuthController],
   providers: [
     AuthService,
-    UserClientService,
-
     JwtStrategy,
     JwtRefreshTokenStrategy,
     RefreshTokenIdsStorage,

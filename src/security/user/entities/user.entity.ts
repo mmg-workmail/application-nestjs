@@ -4,11 +4,10 @@ import { Role } from 'src/security/acl/enums/role.enum';
 import { Status } from '../enums/status.enum';
 import { Gender } from '../enums/gender.enum';
 
+
 @Entity()
 export class User {
-  /**
-   * this decorator will help to auto generate id for the table.
-   */
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,10 +25,14 @@ export class User {
   @Index({ unique: true })
   email: string;
 
+  @Column({ type: 'varchar', name: 'phone_number' })
+  @Index({ unique: true })
+  phoneNumber: string; 
+
   @Column({ type: 'int', default: 0 })
   age: number;
 
-  @Column({ type: 'varchar', select: false })
+  @Column({ type: 'varchar', select: true })
   password: string;
 
   @Column({ type: 'enum', enum: Gender, default: Gender.U })
@@ -39,17 +42,19 @@ export class User {
   status: Status;
 
   @Column({ type: 'bool', default: false, name: 'is_verified' })
-  isVerified: string;
+  isVerified: boolean;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER, name: 'role' })
   role: Role;
 
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+
+  @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
   updatedAt: Date;
+
 
   @AfterUpdate()
   @AfterInsert()
@@ -59,12 +64,18 @@ export class User {
     }
   }
 
-  async bcryptPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt();
-    return bcrypt.hash(password, salt);
+  
+  async bcryptPassword(password: string): Promise<boolean> {
+    let isUpdate = false
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      this.password = await bcrypt.hash(password, salt)
+      isUpdate = true
+    }
+    return isUpdate
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password, () => { });
+    return  bcrypt.compare(password, this.password);
   }
 }

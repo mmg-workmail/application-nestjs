@@ -3,7 +3,8 @@ export enum ConfigKey {
   DB = 'DB',
   CACHE_MANAGER = 'CACHE_MANAGER',
   VALIDATION = 'VALIDATION',
-  AUTH = 'AUTH'
+  AUTH = 'AUTH',
+  PROVIDERS = 'PROVIDERS'
 }
 
 export enum Environment {

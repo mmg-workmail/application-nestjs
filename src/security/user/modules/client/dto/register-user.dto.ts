@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsEnum,
   IsInt,
+  IsMobilePhone,
   IsNotEmpty,
   IsString,
   MinLength
@@ -39,6 +40,8 @@ export class RegisterUserDto {
   )
   email: string;
 
+  @IsMobilePhone()
+  phoneNumber: string
 
   @IsInt()
   age: number = 1;
@@ -51,4 +54,7 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @MinLength(7, { message: 'Name must have atleast 2 characters.' })
   password: string;
+
+
+
 }

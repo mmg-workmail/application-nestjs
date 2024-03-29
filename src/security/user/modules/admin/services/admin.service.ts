@@ -22,8 +22,9 @@ export class AdminService {
     user.lastName = createUserDto.lastName;
     user.age = createUserDto.age;
     user.email = createUserDto.email;
+    user.phoneNumber = createUserDto.phoneNumber
     user.username = createUserDto.username;
-    user.password = await user.bcryptPassword(createUserDto.password);
+    await user.bcryptPassword(createUserDto.password);
     user.gender = createUserDto.gender;
 
     return this.usersRepository.save(user);
@@ -52,11 +53,10 @@ export class AdminService {
     user.lastName = updateUserDto.lastName;
     user.age = updateUserDto.age || 0;
     user.email = updateUserDto.email;
+    user.phoneNumber = updateUserDto.phoneNumber
     user.username = updateUserDto.username;
     user.role = updateUserDto.role
-    if(updateUserDto.password) {
-      user.password = await user.bcryptPassword(updateUserDto.password);
-    }
+    await user.bcryptPassword(updateUserDto.password);
     user.id = id;
     return this.usersRepository.save(user);
   }
