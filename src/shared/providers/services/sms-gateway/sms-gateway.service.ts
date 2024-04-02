@@ -7,8 +7,8 @@ import { Sms } from '../../interfaces/sms';
 export class SmsGatewayService {
 
    public constructor(private readonly twilioService: TwilioService) { }
-   sendSMS(options: Sms) {
-      this.sendSMSWithTwilio(options)
+   async sendSMS(options: Sms) {
+      return await this.sendSMSWithTwilio(options)
    }
 
    private async sendSMSWithTwilio(options: Sms) {

@@ -42,7 +42,7 @@ import { QueueModule } from './queue/queue.module';
             provide: APP_GUARD,
             useClass: ThrottlerGuard
         }
-    ]
+    ],
 })
 export class SharedModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

@@ -12,9 +12,10 @@ import { Module } from '@nestjs/common';
 
         }),
         BullModule.registerQueue({
-            name: 'emailSending',
+            name: 'smsSending',
         }),
-    ]
+    ],
+    exports: [BullModule], 
 })
 export class QueueModule {
 

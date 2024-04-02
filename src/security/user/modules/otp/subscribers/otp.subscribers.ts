@@ -1,8 +1,6 @@
 import { Otp } from 'src/security/user/entities/otp.entity';
 import { OtpGatewayService } from 'src/shared/providers/services/otp-gateway/otp-gateway.service';
 
-
-
 import {
     DataSource,
     EntitySubscriberInterface,

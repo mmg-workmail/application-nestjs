@@ -3,12 +3,11 @@ import { ClientService } from './services/client.service';
 import { ClientController } from './controllers/client.controller';
 import { User } from '../../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Otp } from '../../entities/otp.entity';
-import { OtpService } from '../otp/services/otp/otp.service';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Otp])],
-  providers: [ClientService, OtpService],
+  imports: [TypeOrmModule.forFeature([User])],
+  providers: [ClientService],
   controllers: [ClientController],
   exports: [ClientService]
 })

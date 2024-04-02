@@ -6,6 +6,8 @@ import { OtpGatewayService } from './services/otp-gateway/otp-gateway.service';
 import { ConfigService } from '@nestjs/config';
 import { ProvidersConfig } from '../configs/interface';
 import { ConfigKey } from '../configs/enum';
+import { QueueModule } from '../queue/queue.module';
+import { SmsProcessor } from './services/sms-gateway/smsProcessor';
 
 @Module({
   imports: [
@@ -20,9 +22,9 @@ import { ConfigKey } from '../configs/enum';
       },
       inject: [ConfigService],
     }),
-
+    QueueModule
   ],
-  providers: [SmsGatewayService, MailGatewayService, OtpGatewayService],
+  providers: [SmsGatewayService, MailGatewayService, OtpGatewayService, SmsProcessor],
   exports: [OtpGatewayService]
 })
 export class ProvidersModule {}
