@@ -8,6 +8,8 @@ import { ProvidersConfig } from '../configs/interface';
 import { ConfigKey } from '../configs/enum';
 import { QueueModule } from '../queue/queue.module';
 import { SmsProcessor } from './services/sms-gateway/smsProcessor';
+import { BullModule } from '@nestjs/bull';
+import { QueueName } from './enums';
 
 @Module({
   imports: [
@@ -22,9 +24,12 @@ import { SmsProcessor } from './services/sms-gateway/smsProcessor';
       },
       inject: [ConfigService],
     }),
-    QueueModule
+    QueueModule,
+    BullModule.registerQueue({
+      name: QueueName.SMS_SENDING,
+    }),
   ],
   providers: [SmsGatewayService, MailGatewayService, OtpGatewayService, SmsProcessor],
   exports: [OtpGatewayService]
 })
-export class ProvidersModule {}
+export class ProvidersModule { }

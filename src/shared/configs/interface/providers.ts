@@ -1,6 +1,7 @@
 export interface ProvidersConfig{
     sms: {
         token: string,
-        accountID: string
+        accountID: string,
+        from: string
     }
 }

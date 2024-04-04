@@ -8,6 +8,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ProvidersModule } from './providers/provider.module';
 import { QueueModule } from './queue/queue.module';
+import { WebsocketModule } from './websocket/websocket.module';
 @Module({
     imports: [
         ConfigsModule,
@@ -35,6 +36,7 @@ import { QueueModule } from './queue/queue.module';
             ]
         ),
         QueueModule,
+        WebsocketModule,
 
     ],
     providers: [

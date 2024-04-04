@@ -6,7 +6,8 @@ const ProvidersConfig = registerAs(
     ConfigKey.PROVIDERS, (): ProvidersConfig => ({
         sms: {
             token: process.env.PROVIDERS_SMS_TOKEN,
-            accountID: process.env.PROVIDERS_SMS_ACCOUNT_ID
+            accountID: process.env.PROVIDERS_SMS_ACCOUNT_ID,
+            from: process.env.PROVIDERS_SMS_FROM
         }
     }),
 );

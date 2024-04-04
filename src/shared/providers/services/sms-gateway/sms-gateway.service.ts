@@ -12,10 +12,10 @@ export class SmsGatewayService {
    }
 
    private async sendSMSWithTwilio(options: Sms) {
-      return this.twilioService.client.messages.create({
+      return await this.twilioService.client.messages.create({
          body: options.body,
          to: options.to,
          from: options.from,
-      }).catch(x => (console.log(x))).then(x => (console.log(x)));
+      });
    }
 }

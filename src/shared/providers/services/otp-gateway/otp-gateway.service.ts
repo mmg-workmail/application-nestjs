@@ -7,16 +7,24 @@ import { SmsTemplate } from '../../templates/phone';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { Sms } from '../../interfaces/sms';
+import { QueueName, QueueAttempts } from '../../enums';
+import { ConfigService } from '@nestjs/config';
+import { ProvidersConfig } from 'src/shared/configs/interface';
+import { ConfigKey } from 'src/shared/configs/enum';
+import { JobData } from 'src/shared/queue/interfaces/job-data';
 
 @Injectable()
 export class OtpGatewayService {
-    private template = new SmsTemplate()
+    private template = new SmsTemplate();
+    private providersConfig: ProvidersConfig;
     constructor(
-
+        private readonly configService: ConfigService,
         private readonly mailGatewayService: MailGatewayService,
-        @InjectQueue('smsSending') private readonly smsQueue: Queue,
+        @InjectQueue(QueueName.SMS_SENDING) private readonly smsQueue: Queue,
 
-    ) { }
+    ) { 
+        this.providersConfig = this.configService.get<ProvidersConfig>(ConfigKey.PROVIDERS) 
+    }
     sendOtp(otp: Otp) {
         switch (otp.type) {
             case Type.MAIL:
@@ -30,16 +38,23 @@ export class OtpGatewayService {
     }
 
     private async sendOtpWithSms(otp: Otp) {
+
         const data: Sms = {
             body: this.template.get(otp),
             to: otp.user.phoneNumber,
-            from: '+13213237934'
+            from: this.providersConfig.sms.from
         }
 
-        // const job = await this.smsQueue.add(otp.use_case, data, {
-        //     removeOnComplete  : true,
-        //     attempts : 3
-        // });
+        const jobData: JobData<Sms> = {
+            payload : data,
+            user_id : otp.user.id
+        }
+
+        await this.smsQueue.add(otp.use_case, jobData, {
+            removeOnComplete  : true,
+            attempts : QueueAttempts.SMS_ATTEMPTS,
+            removeOnFail: true
+        });
 
     }
 

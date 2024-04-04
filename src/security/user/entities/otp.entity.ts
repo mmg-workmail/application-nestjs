@@ -41,15 +41,4 @@ export class Otp {
         this.otp = generateToken.makeNumeric(7)
     }
 
-    @AfterInsert()
-    removeUser(): void {
-        // delete this.user
-        // delete this.otp
-        // delete this.id
-        // delete this.createdAt
-        // delete this.updatedAt
-    }
-
-
-
 }

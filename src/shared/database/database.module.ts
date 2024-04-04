@@ -22,7 +22,7 @@ import { AppConfig, DatabaseConfig } from '../configs/interface';
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     database: databaseConfig.database,
                     synchronize: Environment.DEVELOPMENT === appConfig.env && true,
-                    logging: Environment.DEVELOPMENT === appConfig.env && true,
+                    logging: Environment.DEVELOPMENT === appConfig.env && false,
                     autoLoadEntities: true,
                   }
             },
