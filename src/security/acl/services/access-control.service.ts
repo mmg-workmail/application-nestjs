@@ -2,41 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { Role } from '../enums/role.enum';
 
 interface IsAuthorizedParams {
-  currentRole: Role;
+  currentRoles: Role[];
   requiredRole: Role;
 }
 
 @Injectable()
 export class AccessContorlService {
-  private hierarchies: Array<Map<string, number>> = [];
-  private priority: number = 1;
+
 
   constructor() {
-    this.buildRoles([Role.USER, Role.REFERRAL, Role.SUPPORT, Role.MARKETING, Role.WRITER, Role.FINANCIAL, Role.MODERATOR, Role.ADMIN, Role.MANAGER]);
   }
 
-  /**
-   * The buildRoles method allows for creating a role hierarchy between specified set of roles.
-   * Roles have to be specified from least privileged user to the most priviliged one
-   * @param roles Array that contains list of roles
-   */
-  private buildRoles(roles: Role[]) {
-    const hierarchy: Map<string, number> = new Map();
-    roles.forEach((role) => {
-      hierarchy.set(role, this.priority);
-      this.priority++;
-    });
-    this.hierarchies.push(hierarchy);
-  }
-
-  public isAuthorized({ currentRole, requiredRole }: IsAuthorizedParams) {
-    for (let hierarchy of this.hierarchies) {
-      const priority = hierarchy.get(currentRole);
-      const requiredPriority = hierarchy.get(requiredRole);
-      if (priority && requiredPriority && priority >= requiredPriority) {
-        return true;
-      }
-    }
-    return false;
+  public isAuthorized({ currentRoles, requiredRole }: IsAuthorizedParams) {
+    return currentRoles.includes(requiredRole);
   }
 }

@@ -10,6 +10,7 @@ export class ClientController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
+    delete req.user.id
     return req.user;
   }
 }

@@ -80,7 +80,8 @@ export class AuthService {
   }
 
   async validateUserForSignIn(username: string, pass: string): Promise<User | null> {
-    const user = await this.userClientService.findByUsernameOREmailOrPhone(username);
+    const user = await this.userClientService.findByUsernameOREmailOrPhoneForPassword(username);
+
     if (user && await user.validatePassword(pass)) {
       delete user.password
       return user;

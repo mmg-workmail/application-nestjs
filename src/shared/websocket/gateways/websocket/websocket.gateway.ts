@@ -1,7 +1,8 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/security/auth/guards/jwt-auth.guard';
 
 @WebSocketGateway(5005)
 export class WebsocketGateway {
@@ -28,11 +29,12 @@ export class WebsocketGateway {
     this.clients.delete(client);
   }
 
+  @UseGuards(JwtAuthGuard) 
   @SubscribeMessage('newMessage')
   handleMessage(client: Socket, data: any): void {
     this.logger.log(`Message from client ${client.id}: ${JSON.stringify(data)}`);
     client.emit('newMessage', { name: 'Nest' });
-    // this.server.emit('newMessage', `Hi,${data.username}`);
+    this.server.emit('newMessage', `Hi,${data.username}`);
   }
 
 

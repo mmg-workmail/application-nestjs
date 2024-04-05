@@ -34,6 +34,16 @@ export class ClientService {
         return this.usersRepository.findOne({ where: [{ username : account }, { email : account}, {phoneNumber: account}]  });
       }
 
+      async findByUsernameOREmailOrPhoneForPassword(account: string): Promise<User | undefined> {
+        return await this.usersRepository
+        .createQueryBuilder("user")
+        .addSelect(['user.password'])
+        .where("user.username = :username", { username: account })
+        .orWhere("user.email = :email", { email: account })
+        .orWhere("user.phoneNumber = :phoneNumber", { phoneNumber: account })
+        .getOne()
+      }
+
       async resetPassword(_user: User, newPassword : string) {
         const user: User = new User();
 

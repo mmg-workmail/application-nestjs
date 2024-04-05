@@ -24,6 +24,7 @@ export class AdminService {
     user.email = createUserDto.email;
     user.phoneNumber = createUserDto.phoneNumber
     user.username = createUserDto.username;
+    user.roles = createUserDto.roles
     await user.bcryptPassword(createUserDto.password);
     user.gender = createUserDto.gender;
 
@@ -55,7 +56,7 @@ export class AdminService {
     user.email = updateUserDto.email;
     user.phoneNumber = updateUserDto.phoneNumber
     user.username = updateUserDto.username;
-    user.role = updateUserDto.role
+    user.roles = updateUserDto.roles
     await user.bcryptPassword(updateUserDto.password);
     user.id = id;
     return this.usersRepository.save(user);

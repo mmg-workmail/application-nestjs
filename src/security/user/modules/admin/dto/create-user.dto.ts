@@ -1,5 +1,6 @@
 import {
   IsAlphanumeric,
+  IsArray,
   IsEmail,
   IsEnum,
   IsInt,
@@ -56,7 +57,8 @@ export class CreateUserDto {
   
   @IsString()
   @IsEnum(Role)
-  role: Role = Role.USER;
+  @IsArray()
+  roles: Role[] = [Role.USER];
 
   @IsNotEmpty()
   @MinLength(7, { message: 'Name must have atleast 2 characters.' })

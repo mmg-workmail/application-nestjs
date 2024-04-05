@@ -1,11 +1,6 @@
 export enum Role {
-    MANAGER = 'MANAGER',
-    ADMIN = 'ADMIN',
-    MODERATOR = 'MODERATOR',
-    FINANCIAL = 'FINANCIAL',
-    WRITER = 'WRITER',
-    MARKETING = 'MARKETING',
-    SUPPORT = 'SUPPORT',
-    REFERRAL = 'REFERRAL',
+    SUPER_ADMIN = 'SUPER_ADMIN',
+    ADMIN_USER = 'ADMIN_USER',
     USER = 'USER',
+    
 }

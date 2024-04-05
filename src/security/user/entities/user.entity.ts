@@ -32,7 +32,7 @@ export class User {
   @Column({ type: 'int', default: 0 })
   age: number;
 
-  @Column({ type: 'varchar', select: true })
+  @Column({ type: 'varchar', select: false })
   password: string;
 
   @Column({ type: 'enum', enum: Gender, default: Gender.U })
@@ -44,8 +44,8 @@ export class User {
   @Column({ type: 'bool', default: false, name: 'is_verified' })
   isVerified: boolean;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER, name: 'role' })
-  role: Role;
+  @Column({ type: 'enum', enum: Role, default: [Role.USER], name: 'role', array: true })
+  roles: Role[];
 
 
 

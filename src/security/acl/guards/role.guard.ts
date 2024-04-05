@@ -7,7 +7,7 @@ import { AccessContorlService } from '../services/access-control.service';
 
 export class UserDto {
   id: number;
-  role: Role;
+  roles: Role[];
 }
 
 @Injectable()
@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
     for (let role of requiredRoles) {
       const result = this.accessControlService.isAuthorized({
         requiredRole: role,
-        currentRole: user.role,
+        currentRoles: user.roles,
       });
 
       if (result) {
