@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigKey } from 'src/shared/configs/enum';
 import { Auth } from 'src/shared/configs/interface';
 
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -42,8 +43,8 @@ import { Auth } from 'src/shared/configs/interface';
     JwtStrategy,
     JwtRefreshTokenStrategy,
     RefreshTokenIdsStorage,
-
+    JwtService
   ],
-  exports: [AuthService],
+  exports: [AuthService, JwtService],
 })
 export class AuthModule { }

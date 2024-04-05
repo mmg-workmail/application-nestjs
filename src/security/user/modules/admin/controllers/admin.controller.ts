@@ -21,8 +21,9 @@ import { RoleGuard } from 'src/security/acl/guards/role.guard';
 
 
 @Controller('admin/users')
-@Roles(Role.ADMIN_USER)
+
 @UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(Role.ADMIN_USER)
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
 
