@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+
 import { JwtService } from '@nestjs/jwt';
 
 import { ClientService as UserClientService } from 'src/security/user/modules/client/services/client.service';
@@ -145,4 +146,16 @@ export class AuthService {
     return this.userClientService.resetPassword(otp.user, resetPasswordDto.newPassword)
   }
 
+
+   async verifyJwt(token: string) {
+    const t = token.split(' ')
+    try {
+      const decoded = await this.jwtService.verifyAsync(t[1])
+      // Optionally, perform additional checks (e.g., role-based authorization) here
+      return decoded;
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
 }
