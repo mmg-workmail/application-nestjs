@@ -14,6 +14,6 @@ export class JwtAuthWsGuard implements CanActivate {
         return false
     }
 
-    return  this.authService.verifyJwt(token)
+    return  this.authService.verifyJwt(token, client)
   }
 }

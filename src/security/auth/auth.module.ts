@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ClientModule as UserClientModule } from '../user/modules/client/client.module';
 import { OtpModule } from '../user/modules/otp/otp.module';
 
@@ -20,7 +20,7 @@ import { Auth } from 'src/shared/configs/interface';
 @Module({
   imports: [
     UserClientModule,
-    OtpModule,
+    forwardRef(() => OtpModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

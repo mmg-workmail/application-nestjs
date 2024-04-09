@@ -147,12 +147,18 @@ export class AuthService {
   }
 
 
-   async verifyJwt(token: string) {
+   async verifyJwt(token: string, client : any | null = null) {
     const t = token.split(' ')
     try {
       const decoded = await this.jwtService.verifyAsync(t[1])
-      // Optionally, perform additional checks (e.g., role-based authorization) here
-      return decoded;
+
+      const user = await this.userClientService.findOne(decoded.sub)
+      if (client) {
+        client.handshake.auth = user
+      }
+      
+
+      return true;
     } catch (error) {
       console.log(error)
       return false

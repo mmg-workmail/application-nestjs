@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ProvidersModule } from './providers/provider.module';
 import { QueueModule } from './queue/queue.module';
 import { WebsocketModule } from './websocket/websocket.module';
+
 @Module({
     imports: [
         ConfigsModule,
@@ -43,7 +44,7 @@ import { WebsocketModule } from './websocket/websocket.module';
         {
             provide: APP_GUARD,
             useClass: ThrottlerGuard
-        }
+        },
     ],
 })
 export class SharedModule implements NestModule {

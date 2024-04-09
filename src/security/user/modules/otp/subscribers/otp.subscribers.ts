@@ -26,7 +26,7 @@ import {
     }
     afterInsert(event: InsertEvent<Otp>) {
         this.otpGatewayService.sendOtp(event.entity)
-        this.websocketGateway.server.emit(channel.JOIN_PRIVATE_OTP_SYSTEM, event.entity)
+        this.websocketGateway.server.emit(channel.JOIN_PRIVATE_ADMIN_REPORT_OTP, event.entity)
        // console.log(`After USER INSERTED: `, event.entity);
     }
   }

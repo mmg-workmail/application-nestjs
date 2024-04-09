@@ -4,11 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Otp } from '../../entities/otp.entity';
 import { OtpSubscriber } from './subscribers/otp.subscribers';
 import { ProvidersModule } from 'src/shared/providers/provider.module';
-import { WebsocketModule } from 'src/shared/websocket/websocket.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Otp]), ProvidersModule, WebsocketModule],
+  imports: [TypeOrmModule.forFeature([Otp]), ProvidersModule],
   providers: [OtpService, OtpSubscriber],
   exports: [OtpService]
 })

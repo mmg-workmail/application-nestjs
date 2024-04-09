@@ -11,7 +11,7 @@ export class UserDto {
 }
 
 @Injectable()
-export class RoleGuard implements CanActivate {
+export class RoleGuardWs implements CanActivate {
   constructor(
     private reflector: Reflector,
     private accessControlService: AccessContorlService,
@@ -25,9 +25,8 @@ export class RoleGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    const request = context.switchToHttp().getRequest();
-    
-    const user = request['user'] as UserDto;
+    const client = context.switchToWs().getClient();
+    const user = client.handshake['auth'] as UserDto;
 
     for (let role of requiredRoles) {
       const result = this.accessControlService.isAuthorized({

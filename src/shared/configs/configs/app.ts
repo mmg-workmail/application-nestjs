@@ -9,6 +9,8 @@ const APPConfig = registerAs(
         Environment.DEVELOPMENT,
       port: Number(process.env.APP_PORT),
       appName: process.env.APP_NAME,
+      log : true
+      // log : process.env.APP_LOG === 'true' || false
     }),
 );
 

@@ -1,15 +1,18 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, WsResponse } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
-import { GatewayService } from '../../services/gateway/gateway.service';
+import { Logger, UseGuards } from '@nestjs/common';
 import { channel } from '../../enums/channel';
+import { JwtAuthWsGuard } from 'src/security/auth/guards/jwt-auth-ws.guard';
+import { ConfigSystemService } from 'src/shared/configs/services/config-system/config-system.service';
+import { Roles } from 'src/security/acl/decorators/roles.decorator';
+import { Role } from 'src/security/acl/enums/role.enum';
+import { RoleGuardWs } from 'src/security/acl/guards/role.guard.ws';
+
 
 @WebSocketGateway(5005)
 export class WebsocketGateway {
 
-  constructor(private readonly gatewayService: GatewayService) { 
-
-  }
+  constructor(private readonly configSystemService : ConfigSystemService){}
 
   @WebSocketServer()
   server: Server;
@@ -32,28 +35,44 @@ export class WebsocketGateway {
     this.clients.delete(client);
   }
 
+  @UseGuards(JwtAuthWsGuard)
   @SubscribeMessage(channel.JOIN_PRIVATE_USER_CHANNEL)
-  async handleMessage(client: Socket, data: any): Promise<unknown> {
+  async joinPrivateUserChannel(client: Socket, data: any): Promise<unknown> {
 
-    // Recive token of headers
-    const token = client.handshake.headers.authorization;
-    const isValid = await this.gatewayService.verifyAsync(token)
+    // get user
+    const user = client.handshake.auth
 
-    if (!isValid) {
-      client.emit(channel.JOIN_PRIVATE_USER_CHANNEL, { message: 'Authentication failed' });
-    } else {
-      this.logger.log(`User ${isValid.username} joined private wallet channel`);
-      client.emit(channel.JOIN_PRIVATE_USER_CHANNEL, 'You have joined the private channel');
-      client.join(channel.JOIN_PRIVATE_OTP_SYSTEM);
-      // client.join(`privateWalletChannel-${isValid.username}`);
-    
+    if (this.configSystemService.app.log) {
+      this.logger.log(`User ${user.username} joined private wallet channel`);
     }
 
-    // client.emit('newMessage', { name: 'Nest' });
-    // this.server.emit('newMessage', `Hi,${data.username}`);
+    client.emit(channel.JOIN_PRIVATE_USER_CHANNEL, 'You have joined the private channel');
+    // join for user
+    client.join(`privateWalletChannel-${user.username}`);
 
     return
   }
 
+  @UseGuards(JwtAuthWsGuard, RoleGuardWs)
+  @Roles(Role.SUPER_ADMIN)
+  @SubscribeMessage(channel.JOIN_PRIVATE_ADMIN_CHANNEL)
+  async joinPrivateAdminChannel(client: Socket, data: any): Promise<unknown> {
+
+    // get user
+    const user = client.handshake.auth
+
+    if (this.configSystemService.app.log) {
+      this.logger.log(`Admin ${user.username} joined private channel`);
+    }
+    client.emit(channel.JOIN_PRIVATE_USER_CHANNEL, 'You have joined the private channel');
+
+
+    // join for admin
+    client.join(channel.JOIN_PRIVATE_ADMIN_REPORT_REGISTER);
+    client.join(channel.JOIN_PRIVATE_ADMIN_REPORT_LOGIN);
+    client.join(channel.JOIN_PRIVATE_ADMIN_REPORT_OTP);
+
+    return
+  }
 
 }

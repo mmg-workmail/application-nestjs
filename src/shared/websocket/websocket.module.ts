@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module, forwardRef } from '@nestjs/common';
 import { WebsocketGateway } from './gateways/websocket/websocket.gateway';
-import { JwtService } from '@nestjs/jwt';
-import { GatewayService } from './services/gateway/gateway.service';
+import { AuthModule } from 'src/security/auth/auth.module';
 
+
+@Global()
 @Module({
-  imports: [],
-  providers: [WebsocketGateway, JwtService, GatewayService],
+  imports: [forwardRef(() => AuthModule)],
+  providers: [WebsocketGateway],
   exports: [
     WebsocketGateway,
   ]
